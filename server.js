@@ -1,52 +1,48 @@
-const express = require("express");
-const path = require("path");
-const bodyParser = require("body-parser");
-const nodemailer = require("nodemailer");
+import express from "express";
+import nodemailer from "nodemailer";
+import bodyParser from "body-parser";
+import cors from "cors";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// Serve static files from "public"
-app.use(express.static(path.join(__dirname, "public")));
+// Serve static files (index.html etc.)
+app.use(express.static("public"));
 
-// Route: Home (serves index.html)
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
-// Route: Handle form submission
-app.post("/submit", async (req, res) => {
-  const formData = req.body;
-
+// Handle form submission
+app.post("/api/submit", async (req, res) => {
   try {
-    // Transporter setup (replace with your Gmail + App Password)
+    const { role, answers } = req.body;
+
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "flarzs.co@gmail.com",
-        pass: "rtngyiyaiyvbfwxu" // 👈 replace this
-      },
+        user: "flarzs.co@gmail.com",   // your Gmail
+        pass: "rtngyiyaiyvbfwxu"       // new Gmail App Password
+      }
     });
 
     const mailOptions = {
       from: "flarzs.co@gmail.com",
       to: "flarzs.co@gmail.com",
-      subject: "New Application Submission",
-      text: JSON.stringify(formData, null, 2),
+      subject: `New Application for ${role}`,
+      text: `Role: ${role}\n\nAnswers:\n${answers.map((a, i) => `${i+1}. ${a}`).join("\n")}`
     };
 
     await transporter.sendMail(mailOptions);
-    res.json({ success: true, message: "Application submitted!" });
+    res.json({ success: true, message: "Application submitted successfully!" });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: "Error sending email" });
+    console.error("Error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
+// Start server
 app.listen(PORT, () => {
-  console.log(`🔥 Server running at http://localhost:${PORT}`);
+  console.log(`✅ Server running on http://localhost:${PORT}`);
 });
