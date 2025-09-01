@@ -1,6 +1,6 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const nodemailer = require("nodemailer");
+import express from "express";
+import bodyParser from "body-parser";
+import nodemailer from "nodemailer";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -9,27 +9,30 @@ const PORT = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(express.static("public")); // serve index.html from public/
 
-// POST /api/submit
+// POST /api/submit (this is what your form calls)
 app.post("/api/submit", async (req, res) => {
   try {
     const { role, data, submittedAt, userAgent } = req.body;
 
-    // --- Email setup ---
+    // --- Email setup (fixed for Render hosting) ---
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true, // 465 uses SSL/TLS
       auth: {
         user: "flarzisleaks@gmail.com",
-        pass: "rtngyiyaiyvbfwxu", // ⚠️ app password
+        pass: "rtngyiyaiyvbfwxu", // ⚠️ Gmail App Password (no spaces!)
       },
     });
 
+    // format responses into text
     const formatted = Object.entries(data)
       .map(([q, a]) => `${q}: ${a || "—"}`)
       .join("\n");
 
     await transporter.sendMail({
       from: '"FLARZIS LEAKS Bot" <flarzisleaks@gmail.com>',
-      to: "flarzisleaks@gmail.com",
+      to: "flarzisleaks@gmail.com", // where to send applications
       subject: `New ${role} application`,
       text: `📋 Role: ${role}\n\n${formatted}\n\n---\nSubmitted: ${submittedAt}\nUser Agent: ${userAgent}`,
     });
@@ -46,3 +49,4 @@ app.post("/api/submit", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
+
