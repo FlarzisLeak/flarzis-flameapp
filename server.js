@@ -1,6 +1,6 @@
-import express from "express";
-import bodyParser from "body-parser";
-import nodemailer from "nodemailer";
+const express = require("express");
+const bodyParser = require("body-parser");
+const nodemailer = require("nodemailer");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(express.static("public")); // serve index.html from public/
 
-// POST /api/submit (this is what your form calls)
+// POST /api/submit
 app.post("/api/submit", async (req, res) => {
   try {
     const { role, data, submittedAt, userAgent } = req.body;
@@ -19,18 +19,17 @@ app.post("/api/submit", async (req, res) => {
       service: "gmail",
       auth: {
         user: "flarzisleaks@gmail.com",
-        pass: "rtngyiyaiyvbfwxu", // ⚠️ your app password
+        pass: "rtngyiyaiyvbfwxu", // ⚠️ app password
       },
     });
 
-    // format responses into text
     const formatted = Object.entries(data)
       .map(([q, a]) => `${q}: ${a || "—"}`)
       .join("\n");
 
     await transporter.sendMail({
       from: '"FLARZIS LEAKS Bot" <flarzisleaks@gmail.com>',
-      to: "flarzisleaks@gmail.com", // where to send applications
+      to: "flarzisleaks@gmail.com",
       subject: `New ${role} application`,
       text: `📋 Role: ${role}\n\n${formatted}\n\n---\nSubmitted: ${submittedAt}\nUser Agent: ${userAgent}`,
     });
