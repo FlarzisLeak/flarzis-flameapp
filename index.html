@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FLARZIS LEAKS — Role Applications</title>
+  <meta name="theme-color" content="#ff6a00" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b0a10;
+      --panel: rgba(255,255,255,0.06);
+      --text:#f8f8ff;
+      --muted:#b8b8d0;
+      --accent:#ff6a00;
+      --good:#66ffa6;
+      --bad:#ff6b6b;
+      --radius:18px;
+      --glow: 0 10px 40px rgba(255,120,60,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background:
+        radial-gradient(1200px 900px at 20% 10%, rgba(255,120,0,.08), transparent 60%),
+        radial-gradient(900px 600px at 90% 100%, rgba(255,60,0,.08), transparent 60%),
+        linear-gradient(180deg,#0b0a10,#140f1e);
+      color:var(--text); font-family: Inter, ui-sans-serif, system-ui, "Segoe UI", Roboto, Arial;
+      overflow:hidden;
+    }
+    #embers, #flames{ position:fixed; inset:0; z-index:0; pointer-events:none }
+    #flames{ bottom:-6px; height:40vh; }
+    .titlebar{
+      position:sticky; top:0; z-index:3;
+      padding: 14px 18px 8px;
+      background: linear-gradient(180deg, rgba(0,0,0,.65), rgba(0,0,0,0));
+      backdrop-filter: blur(8px);
+    }
+    .neon{
+      font-family: 'Audiowide', Inter, sans-serif;
+      font-weight:900; letter-spacing:.18em; text-align:center; text-transform:uppercase;
+      font-size: clamp(26px, 5vw, 44px);
+      color:#ffeedf;
+      text-shadow: 0 0 8px #ff7a1f, 0 0 18px #ff7a1f, 0 0 36px #ff3b00, 0 0 64px #ff3b00;
+      filter: drop-shadow(0 6px 36px rgba(255,120,60,.55));
+    }
+    .tabs{display:flex; gap:10px; justify-content:center; margin-top:12px}
+    .tab{
+      border:none; cursor:pointer; padding:10px 14px; border-radius:999px;
+      background: linear-gradient(180deg,#ffd6b8,#ff9558);
+      color:#20141a; font-weight:900; letter-spacing:.06em; text-transform:uppercase; font-size:12px;
+      box-shadow: var(--glow);
+      transition: transform .12s ease, filter .25s ease;
+    }
+    .tab:hover{ transform: translateY(-1px); filter: saturate(1.1) }
+    .tab.active{ background: linear-gradient(180deg,#fff,#ffd9c7) }
+    .wrap{ position:relative; z-index:1; display:flex; justify-content:center; padding: 18px; height: calc(100vh - 108px); overflow:auto}
+    .fade-in{ animation: fade .35s ease both }
+    @keyframes fade{ from{ opacity:0; transform: translateY(8px)} to{opacity:1; transform:none } }
+    .card{
+      width:min(1100px, 96vw);
+      background: var(--panel);
+      border:1px solid rgba(255,255,255,.09);
+      border-radius: var(--radius);
+      padding: 22px 20px 26px;
+      box-shadow: var(--glow);
+    }
+    h1{ margin: 0 0 4px; font-size: clamp(20px, 2.6vw, 28px) }
+    .muted{ color: var(--muted); margin-top:0 }
+    .form{ margin-top:12px; display:grid; gap:12px }
+    .scrollable{ max-height: 52vh; overflow:auto; padding-right:6px }
+    .q{ background: rgba(0,0,0,.22); border:1px solid rgba(255,255,255,.07); border-radius:14px; padding:12px; transition: transform .08s ease }
+    .q:focus-within{ transform: translateY(-1px) }
+    .q label{ display:block; font-size:13px; color: #ffd7bf; margin-bottom:8px; letter-spacing:.03em }
+    .input-wrap input[type="text"], .input-wrap textarea, .input-wrap select{
+      width:100%; background: rgba(255,255,255,.06);
+      border: 1px solid transparent;
+      color: var(--text); border-radius: 10px; padding: 10px 12px;
+      outline: none; transition: border-color .2s ease, box-shadow .2s ease, transform .05s ease;
+    }
+    .input-wrap textarea{ min-height: 64px; resize: vertical }
+    .input-wrap input[type="text"]:focus, .input-wrap textarea:focus, .input-wrap select:focus{
+      border-color: rgba(255,200,170,.7); box-shadow: 0 0 0 3px rgba(255,120,60,.25) inset;
+    }
+    .actions{ display:flex; gap:10px; justify-content:flex-end; margin-top:16px }
+    .pill{
+      border:none; cursor:pointer; padding:12px 16px; border-radius:999px; font-weight:900; letter-spacing:.08em;
+      background: linear-gradient(180deg,#ffd6b8,#ff975b); color:#1a1316; text-transform:uppercase; box-shadow: var(--glow);
+      transform: translateZ(0);
+    }
+    .pill:hover{ transform: translateY(-1px) scale(1.02) }
+    .pill.ghost{ background: transparent; border:1px solid rgba(255,255,255,.2); color:#ffd4bf }
+    .pill.fire{ background: linear-gradient(180deg,#fff,#ffd9c7); animation: flicker 3s infinite ease-in-out }
+    @keyframes flicker{
+      0%,100%{ filter: drop-shadow(0 0 0 rgba(255,120,60,.0)) }
+      40%{ filter: drop-shadow(0 0 18px rgba(255,120,60,.35)) }
+      60%{ filter: drop-shadow(0 0 10px rgba(255,120,60,.25)) }
+    }
+    .status{ margin-top:10px; min-height: 20px; color: var(--muted) }
+    .modal{ position:fixed; inset:0; z-index:10; display:grid; place-items:center; background: rgba(0,0,0,.6) }
+    .modal.hidden{ display:none }
+    .modal-card{ width:min(900px, 96vw) }
+    .preview{ background: rgba(0,0,0,.22); border:1px solid rgba(255,255,255,.08); padding:12px; border-radius:14px; max-height: 50vh; overflow:auto }
+    .preview h3{ margin:.4em 0 }
+    .preview .kv{ display:grid; grid-template-columns: 200px 1fr; gap:8px; padding:6px 0; border-bottom:1px dashed rgba(255,255,255,.08) }
+    .preview .kv .k{ color:#ffd0b6 }
+    .preview .kv .v{ color:#fff }
+    .success{ position:fixed; inset:0; z-index:12; display:grid; place-items:center; background: rgba(0,0,0,.7) }
+    .success.hidden{ display:none }
+    .success-card{ width:min(700px, 96vw); text-align:center }
+    .toast{ position:fixed; right:16px; bottom:16px; background:rgba(0,0,0,.7); border:1px solid rgba(255,255,255,.1); color:#fff; padding:10px 12px; border-radius:12px; box-shadow: var(--glow) }
+  </style>
+</head>
+<body>
+  <canvas id="embers" aria-hidden="true"></canvas>
+  <canvas id="flames" aria-hidden="true"></canvas>
+
+  <header class="titlebar">
+    <div class="neon">FLARZIS LEAKS</div>
+    <nav class="tabs">
+      <button class="tab active" data-role="staff">Staff</button>
+      <button class="tab" data-role="moderator">Moderator</button>
+      <button class="tab" data-role="manager">Server Manager</button>
+      <button class="tab" data-role="owner">Owner</button>
+    </nav>
+  </header>
+
+  <main class="wrap fade-in">
+    <section class="card" id="role-card">
+      <h1 id="role-title">Staff Application</h1>
+      <p id="role-desc" class="muted">Fill out all questions below. Your answers autosave locally.</p>
+      <form id="app-form" class="form scrollable" autocomplete="off"></form>
+      <div class="actions">
+        <button id="btn-reset" class="pill ghost" type="button">Reset</button>
+        <button id="btn-preview" class="pill" type="button">Preview</button>
+        <button id="btn-submit" class="pill fire" type="button">Submit</button>
+      </div>
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="preview-title">
+    <div class="modal-card card">
+      <h2 id="preview-title">Preview</h2>
+      <div id="preview" class="preview"></div>
+      <div class="actions">
+        <button id="modal-close" class="pill ghost" type="button">Close</button>
+        <button id="modal-send" class="pill fire" type="button">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="success" class="success hidden">
+    <div class="success-card card">
+      <h2>🔥 Application Sent Successfully!</h2>
+      <p class="muted">Thanks for applying. Your responses have been delivered.</p>
+      <button id="success-ok" class="pill">Back to Forms</button>
+    </div>
+  </div>
+
+  <template id="field-template">
+    <div class="q">
+      <label></label>
+      <div class="input-wrap"></div>
+    </div>
+  </template>
+
+  <script>
+    // Config for backend relay (same origin when server runs)
+    window.FT_CONFIG = { relayEndpoint: "/api/submit" };
+
+    // ===== Questions (15 each) =====
+    const QUESTIONS = {
+      staff: [
+        {label:"Discord username + tag", type:"text"},
+        {label:"Discord ID (18 digits)", type:"text"},
+        {label:"Age", type:"text"},
+        {label:"Time zone (e.g., UTC+6:30)", type:"text"},
+        {label:"How long have you been in this server?", type:"textarea"},
+        {label:"How active are you daily/weekly?", type:"textarea"},
+        {label:"Why do you want to be staff here?", type:"textarea"},
+        {label:"Past staff roles and experience", type:"textarea"},
+        {label:"How would you handle a disrespectful member?", type:"textarea"},
+        {label:"How do you handle stress under pressure?", type:"textarea"},
+        {label:"Can you follow instructions from higher roles?", type:"textarea"},
+        {label:"Skills you bring to the team", type:"textarea"},
+        {label:"How do you prevent favoritism or bias?", type:"textarea"},
+        {label:"What would you do if you disagree with another staff member?", type:"textarea"},
+        {label:"Why should we pick you as staff?", type:"textarea"}
+      ],
+      moderator: [
+        {label:"Discord username + tag", type:"text"},
+        {label:"Discord ID (18 digits)", type:"text"},
+        {label:"Age", type:"text"},
+        {label:"Time zone", type:"text"},
+        {label:"Why do you want to be a moderator?", type:"textarea"},
+        {label:"Moderation experience (servers, size, duties)", type:"textarea"},
+        {label:"How would you handle spam/flooding in chat?", type:"textarea"},
+        {label:"How would you handle two members fighting?", type:"textarea"},
+        {label:"How would you deal with repeated rule-breakers?", type:"textarea"},
+        {label:"How would you stop harassment or bullying?", type:"textarea"},
+        {label:"Are you comfortable using moderation bots (kick/ban/mute)?", type:"textarea"},
+        {label:"What would you do if a friend broke the rules?", type:"textarea"},
+        {label:"How would you handle being falsely accused of abuse?", type:"textarea"},
+        {label:"Weekly time you can dedicate", type:"text"},
+        {label:"Why should we trust you with moderator powers?", type:"textarea"}
+      ],
+      manager: [
+        {label:"Discord username + tag", type:"text"},
+        {label:"Discord ID (18 digits)", type:"text"},
+        {label:"Age", type:"text"},
+        {label:"Time zone", type:"text"},
+        {label:"Why do you want to be a server manager?", type:"textarea"},
+        {label:"Previous server management experience", type:"textarea"},
+        {label:"Skills in server organization (roles/channels/permissions)", type:"textarea"},
+        {label:"How would you update server rules or guidelines?", type:"textarea"},
+        {label:"Plan to improve server engagement", type:"textarea"},
+        {label:"How would you train or guide new staff members?", type:"textarea"},
+        {label:"Handling conflict inside the staff team", type:"textarea"},
+        {label:"Experience with bots/integrations (logging, anti-spam)", type:"textarea"},
+        {label:"Incident response to a major raid/spam", type:"textarea"},
+        {label:"Weekly hours you can commit", type:"text"},
+        {label:"Why should we pick you as server manager?", type:"textarea"}
+      ],
+      owner: [
+        {label:"Discord username + tag", type:"text"},
+        {label:"Discord ID (18 digits)", type:"text"},
+        {label:"Age", type:"text"},
+        {label:"Time zone", type:"text"},
+        {label:"Why do you want Owner-level responsibility?", type:"textarea"},
+        {label:"Experience running large communities", type:"textarea"},
+        {label:"Vision for the server (short manifesto)", type:"textarea"},
+        {label:"90-day growth strategy", type:"textarea"},
+        {label:"Handling disagreements among admins/managers", type:"textarea"},
+        {label:"Dealing with a corrupt staff member", type:"textarea"},
+        {label:"Balancing fairness vs. strict rules", type:"textarea"},
+        {label:"Leadership & motivation strategy for the staff team", type:"textarea"},
+        {label:"Incident response to bots/mass spam/raids", type:"textarea"},
+        {label:"How do you handle criticism or backlash as a leader?", type:"textarea"},
+        {label:"Why should we trust you with Owner-level permissions?", type:"textarea"}
+      ]
+    };
+
+    // ===== Sounds =====
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    const audioCtx = new AudioCtx();
+    function playClick(){
+      const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+      o.type = 'square'; o.frequency.value = 600;
+      g.gain.setValueAtTime(0.05, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.05);
+      o.connect(g).connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.06);
+    }
+    function playType(){
+      const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+      o.type = 'triangle'; o.frequency.value = 240;
+      g.gain.setValueAtTime(0.03, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.04);
+      o.connect(g).connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.045);
+    }
+    window.addEventListener('click', ()=>{ if(audioCtx.state === 'suspended') audioCtx.resume(); }, {once:true});
+
+    // ===== Ember particles =====
+    (function embers(){
+      const cvs = document.getElementById('embers'); const ctx = cvs.getContext('2d');
+      let W=0,H=0; let particles=[];
+      function resize(){ W=innerWidth; H=innerHeight; cvs.width=W; cvs.height=H; }
+      addEventListener('resize', resize); resize();
+      function spawn(){
+        const x = Math.random()*W, y = H + Math.random()*60;
+        const s = Math.random()*2+0.5;
+        const vy = - (Math.random()*0.6 + 0.3);
+        const life = Math.random()*120 + 60;
+        particles.push({x,y,s,vy,life,age:0,alpha:Math.random()*0.7+0.3});
+      }
+      function step(){
+        ctx.clearRect(0,0,W,H);
+        if(particles.length < 160) spawn();
+        for(let p of particles){
+          p.y += p.vy; p.age++; p.alpha *= 0.995;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI*2);
+          ctx.fillStyle = `rgba(255, ${150+Math.floor(Math.random()*105)}, ${60+Math.floor(Math.random()*80)}, ${p.alpha})`;
+          ctx.fill();
+        }
+        particles = particles.filter(p=>p.age<p.life && p.alpha>0.02 && p.y> -20);
+        requestAnimationFrame(step);
+      }
+      step();
+    })();
+
+    // ===== Bottom flames =====
+    (function flames(){
+      const cvs = document.getElementById('flames'); const ctx = cvs.getContext('2d');
+      let W=0,H=0; function resize(){ W=innerWidth; H=Math.min(400, Math.floor(innerHeight*0.4)); cvs.width=W; cvs.height=H; }
+      addEventListener('resize', resize); resize();
+      let t=0;
+      function wave(yOff, color, amp, speed, freq){
+        ctx.beginPath(); ctx.moveTo(0,H);
+        for(let x=0;x<=W;x+=6){
+          const y = H - Math.abs(Math.sin((x*freq + t*speed)))*amp - yOff;
+          ctx.lineTo(x,y);
+        }
+        ctx.lineTo(W,H); ctx.closePath();
+        ctx.fillStyle = color; ctx.fill();
+      }
+      function step(){
+        ctx.clearRect(0,0,W,H);
+        wave(10,'rgba(255,120,20,0.22)',80,0.018,0.018);
+        wave(0,'rgba(255,90,0,0.18)',60,0.022,0.024);
+        wave(0,'rgba(255,60,0,0.12)',40,0.028,0.030);
+        t+=1; requestAnimationFrame(step);
+      }
+      step();
+    })();
+
+    // ===== Form logic =====
+    const roleTitle = document.getElementById('role-title');
+    const roleDesc = document.getElementById('role-desc');
+    const form = document.getElementById('app-form');
+    const statusEl = document.getElementById('status');
+    const previewEl = document.getElementById('preview');
+    const modal = document.getElementById('modal');
+    const success = document.getElementById('success');
+    const tpl = document.getElementById('field-template');
+
+    let currentRole = 'staff'; let answers = {};
+    try{ answers = JSON.parse(localStorage.getItem('ft_answers')||"{}"); } catch(e){ answers={}; }
+
+    function buildForm(role){
+      currentRole = role;
+      roleTitle.textContent = role[0].toUpperCase()+role.slice(1)+" Application";
+      form.innerHTML = "";
+      const qs = QUESTIONS[role];
+      qs.forEach((q, i)=>{
+        const node = tpl.content.firstElementChild.cloneNode(true);
+        node.querySelector('label').textContent = `${i+1}. ${q.label}`;
+        const wrap = node.querySelector('.input-wrap');
+        let el;
+        if(q.type === 'text'){
+          el = document.createElement('input'); el.type = 'text';
+        } else if(q.type === 'select') {
+          el = document.createElement('select'); (q.options||[]).forEach(opt=>{
+            const o = document.createElement('option'); o.value = opt; o.textContent = opt; el.appendChild(o);
+          });
+        } else {
+          el = document.createElement('textarea'); if(q.rows) el.rows = q.rows;
+        }
+        el.name = `q${i+1}`;
+        el.placeholder = q.placeholder || "Type your answer...";
+        el.value = (answers[role] && answers[role][el.name]) || "";
+        el.addEventListener('input', e=>{
+          if(!answers[role]) answers[role] = {};
+          answers[role][el.name] = e.target.value;
+          localStorage.setItem('ft_answers', JSON.stringify(answers));
+          playType();
+        });
+        wrap.appendChild(el);
+        form.appendChild(node);
+      });
+    }
+    buildForm('staff');
+
+    document.querySelectorAll('.tab').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        playClick();
+        document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        buildForm(btn.dataset.role);
+        roleDesc.textContent = "Fill out all questions below. Your answers autosave locally.";
+        setStatus("Switched role: "+btn.textContent, 'info', 1200);
+      });
+    });
+
+    document.getElementById('btn-reset').addEventListener('click', ()=>{
+      playClick();
+      if(confirm("Reset answers for this role?")){
+        if(answers[currentRole]) delete answers[currentRole];
+        localStorage.setItem('ft_answers', JSON.stringify(answers));
+        buildForm(currentRole);
+        setStatus("Reset complete.", "ok");
+      }
+    });
+
+    document.getElementById('btn-preview').addEventListener('click', ()=>{
+      playClick();
+      const body = gather();
+      previewEl.innerHTML = renderPreview(body);
+      modal.classList.remove('hidden');
+    });
+    document.getElementById('modal-close').addEventListener('click', ()=> { playClick(); modal.classList.add('hidden'); });
+    document.getElementById('modal-send').addEventListener('click', handleSubmit);
+    document.getElementById('btn-submit').addEventListener('click', handleSubmit);
+
+    function gather(){
+      const data = {};
+      Array.from(form.querySelectorAll('input, textarea, select')).forEach(el=>{
+        const key = el.parentElement.parentElement.querySelector('label').textContent;
+        data[key] = el.value.trim();
+      });
+      return { role: currentRole, data, submittedAt: new Date().toISOString(), userAgent: navigator.userAgent };
+    }
+
+    function renderPreview(body){
+      const lines = [];
+      for(const [k,v] of Object.entries(body.data)){
+        lines.push(`<div class="kv"><div class="k">${escapeHtml(k)}</div><div class="v">${escapeHtml(v||'—')}</div></div>`);
+      }
+      return `<h3>Role: ${escapeHtml(body.role)}</h3>${lines.join('')}`;
+    }
+    function escapeHtml(s){ return s.replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
+
+    function setStatus(msg, kind='info', ms=0){
+      statusEl.textContent = msg;
+      statusEl.style.color = kind==='ok' ? 'var(--good)' : (kind==='err' ? 'var(--bad)' : 'var(--muted)');
+      if(ms){
+        const div = document.createElement('div'); div.className='toast'; div.textContent=msg;
+        document.body.appendChild(div); setTimeout(()=>div.remove(), ms);
+      }
+    }
+
+    async function handleSubmit(){
+      playClick();
+      const body = gather();
+      const keys = Object.keys(body.data);
+      for(let i=0;i<3;i++){
+        if(!body.data[keys[i]]){ setStatus("Please fill in: "+keys[i], 'err', 1800); return; }
+      }
+      try{
+        const res = await fetch((window.FT_CONFIG && FT_CONFIG.relayEndpoint) || "/api/submit", {
+          method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)
+        });
+        if(res.ok){
+          document.getElementById('modal').classList.add('hidden');
+          showSuccess(); setStatus('Submitted. Thank you!', 'ok', 1600);
+        }else{
+          const t = await res.text(); setStatus('Server error: '+t, 'err', 2200);
+        }
+      }catch(e){ setStatus('Network error: '+e.message, 'err', 2200); }
+    }
+    function showSuccess(){
+      success.classList.remove('hidden');
+      document.getElementById('success-ok').onclick = ()=>{ playClick(); success.classList.add('hidden'); };
+    }
+  </script>
+</body>
+</html>
