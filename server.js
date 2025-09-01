@@ -28,7 +28,7 @@ app.post("/submit", async (req, res) => {
       service: "gmail",
       auth: {
         user: "flarzs.co@gmail.com",
-        pass: "rtng yiya iyvb fwxu" // 👈 replace this
+        pass: "rtngyiyaiyvbfwxu" // 👈 replace this
       },
     });
 
